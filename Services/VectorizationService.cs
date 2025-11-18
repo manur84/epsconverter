@@ -111,12 +111,13 @@ namespace EPSConverter.Services
 
                     if (cx >= 0 && cx < originalImage.Width && cy >= 0 && cy < originalImage.Height)
                     {
-                        var pixel = originalImage.GetData(cy, cx) as byte[];
-                        if (pixel != null && pixel.Length >= 3)
+                        // Hole die Pixel-Daten der gesamten Zeile und greife auf das gewünschte Pixel zu
+                        var rowData = originalImage.Row(cy).GetData() as byte[];
+                        if (rowData != null && rowData.Length >= (cx * 3 + 2))
                         {
-                            double r = pixel[2] / 255.0;
-                            double g = pixel[1] / 255.0;
-                            double b = pixel[0] / 255.0;
+                            double b = rowData[cx * 3 + 0] / 255.0;
+                            double g = rowData[cx * 3 + 1] / 255.0;
+                            double r = rowData[cx * 3 + 2] / 255.0;
                             sb.AppendLine($"{r:F3} {g:F3} {b:F3} setrgbcolor");
                         }
                     }
