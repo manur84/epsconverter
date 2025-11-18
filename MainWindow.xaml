@@ -106,7 +106,7 @@
                     </Grid.RowDefinitions>
 
                     <!-- Zoom Controls -->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#F0F0F0" Padding="5">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#F0F0F0" Margin="5">
                         <Button Content="🔍+" Width="30" Height="30" Margin="2" Click="ZoomIn_Click" ToolTip="Vergrößern"/>
                         <Button Content="🔍-" Width="30" Height="30" Margin="2" Click="ZoomOut_Click" ToolTip="Verkleinern"/>
                         <Button Content="⬜" Width="30" Height="30" Margin="2" Click="ZoomFit_Click" ToolTip="An Fenster anpassen"/>
