@@ -1,0 +1,61 @@
+<Window x:Class="EPSConverter.Dialogs.ScaleDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Skalieren" Height="280" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Bild skalieren" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <StackPanel Grid.Row="1" Margin="0,5">
+            <Label Content="Breite (%):"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <Slider x:Name="WidthSlider" Grid.Column="0" Minimum="10" Maximum="500" Value="100"
+                        TickFrequency="10" IsSnapToTickEnabled="True" ValueChanged="WidthSlider_ValueChanged"/>
+                <TextBox x:Name="WidthTextBox" Grid.Column="1" Text="100" Margin="10,0,0,0"
+                         VerticalContentAlignment="Center" TextChanged="WidthTextBox_TextChanged"/>
+            </Grid>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="0,5">
+            <Label Content="Höhe (%):"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <Slider x:Name="HeightSlider" Grid.Column="0" Minimum="10" Maximum="500" Value="100"
+                        TickFrequency="10" IsSnapToTickEnabled="True" ValueChanged="HeightSlider_ValueChanged"/>
+                <TextBox x:Name="HeightTextBox" Grid.Column="1" Text="100" Margin="10,0,0,0"
+                         VerticalContentAlignment="Center" TextChanged="HeightTextBox_TextChanged"/>
+            </Grid>
+        </StackPanel>
+
+        <CheckBox x:Name="MaintainAspectCheckBox" Grid.Row="3" Content="Seitenverhältnis beibehalten"
+                  IsChecked="True" Margin="0,10" Checked="MaintainAspect_Changed" Unchecked="MaintainAspect_Changed"/>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,5">
+            <TextBlock Text="Vorschau: " VerticalAlignment="Center"/>
+            <TextBlock x:Name="PreviewText" Text="100% × 100%" VerticalAlignment="Center" FontWeight="Bold"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="OK" Width="80" IsDefault="True" Click="OK_Click" Margin="0,0,10,0"/>
+            <Button Content="Abbrechen" Width="80" IsCancel="True" Click="Cancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

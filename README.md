@@ -5,12 +5,22 @@ Eine umfassende Windows-Desktop-Anwendung zum Öffnen, Bearbeiten und Vektorisie
 ## 🎯 Features
 
 ### Hauptfunktionen
-- ✅ **EPS-Dateien öffnen und anzeigen** - Importieren und Betrachten von EPS-Dokumenten
-- ✅ **Bildvektorisierung** - Konvertierung von Rasterbildern (PNG, JPG, BMP, etc.) in Vektorgrafiken
-- ✅ **EPS-Export** - Speichern von Projekten als EPS-Dateien
-- ✅ **Bildexport** - Exportieren in gängige Bildformate (PNG, JPG, BMP)
+- ✅ **EPS-Dateien öffnen und anzeigen** - Professionelles Rendering mit Ghostscript/ImageMagick
+- ✅ **Bildvektorisierung** - Konvertierung von Rasterbildern in Vektorgrafiken
+- ✅ **Bildbearbeitung** - Skalieren, Drehen, Spiegeln, Filter, Helligkeit/Kontrast
+- ✅ **Zoom & Pan** - Mausrad-Zoom (Strg+Scroll) und Drag-to-Pan
+- ✅ **Undo/Redo** - Unbegrenzte Rückgängig/Wiederholen-Funktion (Strg+Z/Strg+Y)
+- ✅ **Filter** - Graustufen, Sepia, Invertieren, Weichzeichnen
+- ✅ **EPS/Bild-Export** - Speichern in EPS, PNG, JPG, BMP
 - ✅ **Batch-Konvertierung** - Mehrere Bilder gleichzeitig verarbeiten
-- ✅ **Anpassbare Einstellungen** - Feinabstimmung der Vektorisierungsparameter
+- ✅ **PostScript-Parser** - Automatische Metadaten-Extraktion
+
+### Bearbeitungs-Funktionen
+- **Skalieren** (Strg+T): Größe ändern mit Seitenverhältnis-Option
+- **Drehen** (Strg+R): Freie Rotation oder 90°/180° Schnelldrehung
+- **Spiegeln**: Horizontal oder vertikal
+- **Helligkeit/Kontrast**: Feinabstimmung der Bildqualität
+- **Filter**: Graustufen, Sepia, Invertieren, Weichzeichnen
 
 ### Vektorisierungs-Einstellungen
 - **Schwellenwert** (0-255): Steuert die Schwarz/Weiß-Konvertierung
@@ -86,6 +96,23 @@ Die ausführbare Datei finden Sie unter: `bin/Release/net8.0-windows/win-x64/pub
 4. Klicken Sie auf **"🔄 Vektorisieren"**
 5. Speichern Sie das Ergebnis mit **"💾 Speichern"**
 
+### Bild bearbeiten
+1. Öffnen Sie ein Bild oder EPS
+2. Verwenden Sie die Bearbeitungs-Funktionen:
+   - **Skalieren** (Strg+T): Größe ändern mit einstellbarem Seitenverhältnis
+   - **Drehen** (Strg+R): Freie Rotation oder Schnelldrehung (90°, 180°)
+   - **Spiegeln**: Horizontal oder vertikal
+   - **Filter**: Graustufen, Sepia, Invertieren, Weichzeichnen
+   - **Helligkeit/Kontrast**: Feinabstimmung der Bildqualität
+3. Alle Änderungen können mit **Rückgängig** (Strg+Z) wiederhergestellt werden
+
+### Zoom & Navigation
+- **Zoom In**: 🔍+ Button oder Strg+Mausrad nach oben
+- **Zoom Out**: 🔍- Button oder Strg+Mausrad nach unten
+- **Zoom anpassen**: ⬜ Button passt Bild an Fenster an
+- **100% Zoom**: 1:1 Button
+- **Pan/Verschieben**: Linke Maustaste gedrückt halten und ziehen
+
 ### Batch-Konvertierung
 1. Wählen Sie **Vektorisieren → Batch-Konvertierung...**
 2. Wählen Sie mehrere Bilddateien aus
@@ -93,10 +120,11 @@ Die ausführbare Datei finden Sie unter: `bin/Release/net8.0-windows/win-x64/pub
 4. Die Anwendung verarbeitet alle Dateien automatisch
 
 ### Tastenkombinationen
-- **Strg+O**: EPS öffnen
-- **Strg+S**: Speichern
-- **Strg+E**: Exportieren
-- **Strg+V**: Vektorisieren
+- **Strg+Z**: Rückgängig
+- **Strg+Y**: Wiederholen
+- **Strg+T**: Skalieren
+- **Strg+R**: Drehen
+- **Strg+Mausrad**: Zoom
 
 ## 🏗️ Projektstruktur
 
@@ -221,17 +249,21 @@ Die Anwendung kann EPS-Dateien einlesen und verarbeitet diese in mehreren Schrit
 
 ## 🔮 Geplante Features
 
-- [ ] Erweiterte Bearbeitungswerkzeuge (Skalieren, Drehen, Zuschneiden)
-- [ ] Undo/Redo-Funktionalität
-- [ ] Ebenen-System
-- [ ] Erweiterte Farbpaletten-Verwaltung
+- [x] Erweiterte Bearbeitungswerkzeuge (Skalieren, Drehen, Spiegeln) ✅
+- [x] Undo/Redo-Funktionalität ✅
+- [x] Zoom- und Pan-Funktionen im Canvas ✅
 - [x] Integration von Ghostscript für besseres EPS-Rendering ✅
 - [x] PostScript-Parser für Metadaten-Extraktion ✅
+- [x] Bildfilter (Graustufen, Sepia, Invertieren, Weichzeichnen) ✅
+- [x] Helligkeit/Kontrast-Anpassung ✅
+- [ ] Ebenen-System
+- [ ] Erweiterte Farbpaletten-Verwaltung
+- [ ] Zuschneiden-Werkzeug
 - [ ] SVG-Import/Export
 - [ ] PDF-Export
 - [ ] Vektortext-Extraktion aus Bildern (OCR)
 - [ ] Direktes Bearbeiten von Vektorpfaden
-- [ ] Zoom- und Pan-Funktionen im Canvas
+- [ ] Verlaufseditor
 
 ## 📄 Lizenz
 
@@ -266,7 +298,18 @@ Bei Fragen oder Problemen:
 
 ## 📋 Changelog
 
-### Version 1.1.0 (Aktuell)
+### Version 2.0.0 (Aktuell)
+- ✅ **Vollständige Bildbearbeitung**: Skalieren, Drehen, Spiegeln
+- ✅ **Undo/Redo-System**: Unbegrenzte Rückgängig/Wiederholen-Funktionalität
+- ✅ **Zoom & Pan**: Mausrad-Zoom mit Strg+Scroll und Drag-to-Pan
+- ✅ **Bildfilter**: Graustufen, Sepia, Invertieren, Weichzeichnen
+- ✅ **Helligkeit/Kontrast**: Professionelle Bildanpassung
+- ✅ **Tastenkombinationen**: Strg+Z, Strg+Y, Strg+T, Strg+R
+- ✅ **Interaktive Dialoge**: Skalieren, Drehen, Helligkeit/Kontrast mit Live-Vorschau
+- ✅ **Zoom-Toolbar**: Schnellzugriff auf Zoom-Funktionen
+- ✅ **Transform-Service**: Professionelle Bildtransformationen mit SkiaSharp
+
+### Version 1.1.0
 - ✅ Ghostscript-Integration für professionelles EPS-Rendering
 - ✅ PostScript-Parser für Metadaten-Extraktion
 - ✅ Multi-Level Rendering-System (Ghostscript → ImageMagick → Fallback)
@@ -280,5 +323,5 @@ Bei Fragen oder Problemen:
 - Bildvektorisierung
 - Batch-Konvertierung
 
-**Version**: 1.1.0
+**Version**: 2.0.0
 **Letztes Update**: November 2024
