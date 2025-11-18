@@ -23,6 +23,18 @@ Eine umfassende Windows-Desktop-Anwendung zum Öffnen, Bearbeiten und Vektorisie
 ### Voraussetzungen
 - Windows 10/11
 - .NET 8.0 Runtime oder höher
+- **Empfohlen**: Ghostscript (für optimale EPS-Darstellung)
+
+### Ghostscript Installation (Optional aber empfohlen)
+
+Für die beste EPS-Rendering-Qualität sollten Sie Ghostscript installieren:
+
+1. Besuchen Sie https://www.ghostscript.com/download/gsdnld.html
+2. Laden Sie "Ghostscript 10.x for Windows (64 bit)" herunter
+3. Führen Sie das Installationsprogramm aus
+4. Starten Sie die EPS Converter Anwendung neu
+
+**Hinweis**: Die Anwendung funktioniert auch ohne Ghostscript, verwendet dann aber ImageMagick als Fallback oder zeigt eine Platzhalter-Vorschau an.
 
 ### Von Quellcode bauen
 
@@ -55,7 +67,14 @@ Die ausführbare Datei finden Sie unter: `bin/Release/net8.0-windows/win-x64/pub
 ### EPS-Datei öffnen
 1. Klicken Sie auf **"📁 EPS Öffnen"** oder wählen Sie **Datei → EPS öffnen...**
 2. Wählen Sie eine `.eps` Datei aus
-3. Die Datei wird im Hauptfenster angezeigt
+3. Die Datei wird im Hauptfenster gerendert und angezeigt
+4. Im Eigenschaften-Panel sehen Sie Dateiinformationen und Metadaten
+5. Die Statusleiste zeigt Anzahl der Pfade, Textelemente und verwendeten Farben
+
+**Rendering-Hierarchie:**
+- **Beste Qualität**: Ghostscript (wenn installiert)
+- **Gute Qualität**: ImageMagick (integrierter Fallback)
+- **Basis-Vorschau**: Platzhalter mit Metadaten (wenn weder Ghostscript noch ImageMagick verfügbar)
 
 ### Bild vektorisieren
 1. Klicken Sie auf **"🖼️ Bild Öffnen"** oder wählen Sie **Datei → Bild öffnen...**
@@ -92,8 +111,9 @@ EPSConverter/
 │   ├── EPSData.cs            # EPS-Daten-Modell
 │   └── VectorizationSettings.cs  # Einstellungs-Modell
 └── Services/
-    ├── EPSService.cs         # EPS-Verarbeitung
+    ├── EPSService.cs         # EPS-Verarbeitung mit Ghostscript/ImageMagick
     ├── ImageService.cs       # Bild-Verarbeitung
+    ├── PostScriptParser.cs   # PostScript/EPS Parser
     └── VectorizationService.cs   # Vektorisierungs-Engine
 ```
 
@@ -101,18 +121,38 @@ EPSConverter/
 
 - **Framework**: .NET 8.0 / WPF (Windows Presentation Foundation)
 - **UI**: XAML mit modernem Design
+- **EPS-Rendering**:
+  - Ghostscript.NET - Professionelles PostScript/EPS Rendering
+  - Magick.NET (ImageMagick) - Fallback-Rendering
+  - SkiaSharp - Grafik-Operationen und Platzhalter-Rendering
 - **Bildverarbeitung**:
   - Emgu.CV (OpenCV Wrapper) - Konturerkennung und Bildanalyse
-  - SkiaSharp - Rendering und Grafik-Operationen
+  - SkiaSharp - 2D-Grafik-Rendering
+- **PostScript-Verarbeitung**:
+  - Eigener PostScript-Parser für Metadaten-Extraktion
 - **Design Pattern**: MVVM (Model-View-ViewModel)
 
 ## 🎨 Features im Detail
 
 ### EPS-Verarbeitung
-Die Anwendung kann EPS-Dateien einlesen und parst automatisch:
-- BoundingBox-Informationen
-- Dokumentendimensionen
-- PostScript-Befehle
+Die Anwendung kann EPS-Dateien einlesen und verarbeitet diese in mehreren Schritten:
+
+**1. Datei-Parsing:**
+- BoundingBox und HiResBoundingBox Extraktion
+- Dokumentendimensionen (Breite × Höhe in Punkten)
+- Metadaten (Titel, Creator, Erstellungsdatum)
+- PostScript-Befehle und Pfade
+- Textelemente und verwendete Farben
+
+**2. Rendering:**
+- **Ghostscript**: Konvertiert PostScript in hochqualitative Rasterbilder
+- **ImageMagick**: Alternative Rendering-Engine als Fallback
+- **Platzhalter-Modus**: Zeigt Metadaten wenn kein Renderer verfügbar
+
+**3. Analyse:**
+- Automatische Extraktion von Vektorpfaden
+- Erkennung von Textelementen
+- Farbpaletten-Analyse (RGB, CMYK, Graustufen)
 
 ### Vektorisierungs-Algorithmus
 1. **Vorverarbeitung**: Graustufenkonvertierung und optionale Glättung
@@ -141,8 +181,43 @@ Die Anwendung kann EPS-Dateien einlesen und parst automatisch:
 ## 🐛 Bekannte Einschränkungen
 
 - Komplexe EPS-Dateien mit erweiterten PostScript-Features werden möglicherweise nicht vollständig unterstützt
-- Die Vorschau verwendet eine vereinfachte Darstellung (für vollständiges Rendering wird Ghostscript empfohlen)
 - Sehr große Bilder können längere Verarbeitungszeiten haben
+- Einige spezielle PostScript-Operatoren werden vom Parser nicht erkannt
+
+## 🔧 Troubleshooting
+
+### Ghostscript-Probleme
+
+**Problem: "Ghostscript nicht gefunden"**
+- **Lösung**: Installieren Sie Ghostscript von https://www.ghostscript.com/download/gsdnld.html
+- Stellen Sie sicher, dass Sie die 64-bit Version installieren
+- Nach der Installation: Anwendung neu starten
+
+**Problem: EPS wird nicht korrekt angezeigt**
+- **Lösung 1**: Überprüfen Sie, ob Ghostscript installiert ist
+- **Lösung 2**: Wenn Ghostscript installiert ist, versuchen Sie ImageMagick als Fallback
+- **Lösung 3**: Die Platzhalter-Ansicht zeigt zumindest Metadaten und Dimensionen
+
+### Rendering-Probleme
+
+**Problem: Vorschau zeigt nur Platzhalter**
+- Die Anwendung verwendet drei Rendering-Methoden in dieser Reihenfolge:
+  1. Ghostscript (beste Qualität)
+  2. ImageMagick (gute Qualität, integriert)
+  3. Platzhalter (Metadaten-Anzeige)
+- Installieren Sie Ghostscript für beste Ergebnisse
+
+**Problem: Vektorisierung schlägt fehl**
+- Überprüfen Sie, ob das Bild beschädigt ist
+- Versuchen Sie verschiedene Schwellenwert-Einstellungen
+- Reduzieren Sie das Detail-Level für komplexe Bilder
+
+### Performance-Probleme
+
+**Problem: Langsame Verarbeitung großer Bilder**
+- Reduzieren Sie die DPI-Einstellung (z.B. von 600 auf 300)
+- Verwenden Sie niedrigere Detail-Level-Einstellungen
+- Schließen Sie andere Anwendungen während der Verarbeitung
 
 ## 🔮 Geplante Features
 
@@ -150,10 +225,13 @@ Die Anwendung kann EPS-Dateien einlesen und parst automatisch:
 - [ ] Undo/Redo-Funktionalität
 - [ ] Ebenen-System
 - [ ] Erweiterte Farbpaletten-Verwaltung
-- [ ] Integration von Ghostscript für besseres EPS-Rendering
+- [x] Integration von Ghostscript für besseres EPS-Rendering ✅
+- [x] PostScript-Parser für Metadaten-Extraktion ✅
 - [ ] SVG-Import/Export
 - [ ] PDF-Export
 - [ ] Vektortext-Extraktion aus Bildern (OCR)
+- [ ] Direktes Bearbeiten von Vektorpfaden
+- [ ] Zoom- und Pan-Funktionen im Canvas
 
 ## 📄 Lizenz
 
@@ -175,6 +253,9 @@ Bei Fragen oder Problemen:
 
 ## 🙏 Danksagungen
 
+- **Ghostscript** - PostScript und PDF Interpreter
+- **Ghostscript.NET** - .NET Wrapper für Ghostscript
+- **ImageMagick / Magick.NET** - Bildverarbeitungs-Bibliothek
 - **Emgu.CV** - OpenCV Wrapper für .NET
 - **SkiaSharp** - Cross-platform 2D Graphics Library
 - **WPF** - Windows Presentation Foundation Team
@@ -183,5 +264,21 @@ Bei Fragen oder Problemen:
 
 **Hinweis**: Diese Anwendung wurde entwickelt, um eine benutzerfreundliche Lösung für EPS-Konvertierung und Bildvektorisierung unter Windows bereitzustellen.
 
-**Version**: 1.0.0
+## 📋 Changelog
+
+### Version 1.1.0 (Aktuell)
+- ✅ Ghostscript-Integration für professionelles EPS-Rendering
+- ✅ PostScript-Parser für Metadaten-Extraktion
+- ✅ Multi-Level Rendering-System (Ghostscript → ImageMagick → Fallback)
+- ✅ Erweiterte EPS-Informationsanzeige (Pfade, Texte, Farben)
+- ✅ Automatische Ghostscript-Erkennung beim Start
+- ✅ Verbesserte Fehlerbehandlung und Fallback-Mechanismen
+
+### Version 1.0.0
+- Initiale Version mit grundlegenden Features
+- EPS-Dateien öffnen und anzeigen
+- Bildvektorisierung
+- Batch-Konvertierung
+
+**Version**: 1.1.0
 **Letztes Update**: November 2024

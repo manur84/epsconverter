@@ -27,6 +27,34 @@ namespace EPSConverter
             _imageService = new ImageService();
 
             InitializeSliders();
+            CheckGhostscript();
+        }
+
+        private void CheckGhostscript()
+        {
+            if (!_epsService.IsGhostscriptAvailable())
+            {
+                var result = MessageBox.Show(
+                    "Ghostscript wurde nicht gefunden.\n\n" +
+                    "Für die beste EPS-Darstellung wird Ghostscript empfohlen.\n" +
+                    "Die Anwendung funktioniert auch ohne Ghostscript, verwendet dann aber ImageMagick oder eine Fallback-Anzeige.\n\n" +
+                    "Möchten Sie mehr über die Installation von Ghostscript erfahren?",
+                    "Ghostscript nicht gefunden",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    MessageBox.Show(
+                        "Ghostscript kann von folgender Seite heruntergeladen werden:\n\n" +
+                        "https://www.ghostscript.com/download/gsdnld.html\n\n" +
+                        "Laden Sie die Windows 64-bit Version herunter und installieren Sie sie.\n" +
+                        "Nach der Installation starten Sie die Anwendung neu.",
+                        "Ghostscript Installation",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
         }
 
         private void InitializeSliders()
@@ -405,7 +433,31 @@ namespace EPSConverter
         {
             FileNameText.Text = $"Datei: {Path.GetFileName(filePath)}";
             FileSizeText.Text = $"Größe: {new FileInfo(filePath).Length / 1024} KB";
-            DimensionsText.Text = $"Abmessungen: {epsData.Width} x {epsData.Height}";
+            DimensionsText.Text = $"Abmessungen: {epsData.Width:F1} × {epsData.Height:F1} pt";
+
+            // Parse and display additional EPS information
+            var parser = new PostScriptParser();
+            try
+            {
+                var psDoc = parser.Parse(epsData.Content ?? "");
+                var summary = parser.GetSummary(psDoc);
+
+                // Update status with parsing info
+                if (!string.IsNullOrEmpty(summary))
+                {
+                    StatusText.Text = $"EPS geladen: {psDoc.Paths.Count} Pfade, {psDoc.TextElements.Count} Texte, {psDoc.Colors.Count} Farben";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Parser error: {ex.Message}");
+            }
+
+            // Show Ghostscript availability warning
+            if (!_epsService.IsGhostscriptAvailable())
+            {
+                StatusText.Text += " | ⚠️ Ghostscript nicht installiert - eingeschränkte Vorschau";
+            }
         }
 
         private void UpdateFileInfoFromImage(string filePath, BitmapSource bitmap)

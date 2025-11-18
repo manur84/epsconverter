@@ -7,5 +7,9 @@ namespace EPSConverter.Models
         public double Height { get; set; }
         public string? BoundingBox { get; set; }
         public byte[]? PreviewData { get; set; }
+        public string? FilePath { get; set; }
+        public string? Title { get; set; }
+        public string? Creator { get; set; }
+        public string? CreationDate { get; set; }
     }
 }
